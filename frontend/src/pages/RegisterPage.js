@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // <-- IMPORT useNavigate
-import axios from 'axios';
+import api from '../services/api';
 import { toast } from 'react-toastify'; // <-- IMPORT toast
 
 import './AuthPage.css';
