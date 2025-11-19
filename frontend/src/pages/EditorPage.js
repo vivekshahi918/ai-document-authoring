@@ -1,6 +1,5 @@
 // frontend/src/pages/EditorPage.js - UPDATED WITH CSS CLASSES
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../services/api';
 import SectionEditor from '../components/SectionEditor';
@@ -15,6 +14,32 @@ const EditorPage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isExporting, setIsExporting] = useState(false);
     const [error, setError] = useState('');
+
+    useEffect(() => {
+        const fetchProjectDetails = async () => {
+            try {
+                const response = await api.get(`/projects/${projectId}`);
+                const project = response.data;
+                
+                // Populate the form fields with data from the backend
+                if (project.main_topic) {
+                    setMainTopic(project.main_topic);
+                }
+                if (project.sections && project.sections.length > 0) {
+                    // Convert the saved list of titles into the state structure
+                    setSections(project.sections.map(title => ({ title: title })));
+                } else {
+                    // Ensure there's at least one empty section if none are saved
+                    setSections([{ title: '' }]);
+                }
+            } catch (err) {
+                setError("Failed to load project details. You may be offline or the project doesn't exist.");
+                console.error(err);
+            }
+        };
+
+        fetchProjectDetails();
+    }, [projectId]);
 
     const handleSectionChange = (index, value) => {
         const newSections = [...sections];
