@@ -6,9 +6,9 @@ const api = axios.create({
     baseURL: process.env.REACT_APP_API_BASE_URL,
     //  || 'https://ai-document-authoring-production.up.railway.app/api/v1',
     timeout: 10000,
-    headers: {
-        'Content-Type': 'application/json',
-    }
+    // headers: {
+    //     'Content-Type': 'application/json',
+    // }
 });
 
 // Request Interceptor: Adds the auth token to every outgoing request's header.
