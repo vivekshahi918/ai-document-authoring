@@ -10,3 +10,4 @@ __pycache__/
 # Build folders
 /build/
 /dist/
+/frontend/node_modules

@@ -1,0 +1,148 @@
+/* frontend/src/pages/EditorPage.css */
+
+.editor-page-container {
+    padding: 30px;
+    max-width: 1200px;
+    margin: auto;
+    background: #222;
+    border-radius: 12px;
+    box-shadow: 1px 1px 20px #02cefcf7, 1px 1px 40px #01f9ecf7;
+    color: white;
+    margin-top: 10px;
+    margin-bottom:10px
+}
+
+.editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.editor-header h1 {
+    margin-right: 20px;
+}
+
+.editor-actions {
+    display: flex;
+    gap: 15px; /* Adds space between buttons */
+}
+
+.editor-button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    text-decoration: none;
+    color: white;
+    display: inline-block;
+    text-align: center;
+}
+
+.export-button {
+    background: #007bff;
+}
+.export-button:disabled {
+    background: #004a99;
+    cursor: not-allowed;
+}
+
+.back-button {
+    background: #333;
+}
+
+.config-box {
+    background: #282c34;
+    padding: 25px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.config-box label {
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.input-field {
+    width: 100%;
+    padding: 12px;
+    margin-top: 5px;
+    border: none;
+    border-radius: 5px;
+    background-color: #3a3f4b;
+    color: white;
+    font-size: 1em;
+}
+
+.ai-suggest-button {
+    padding: 10px 15px;
+    background: #6c63ff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 15px 0;
+    font-size: 1em;
+}
+
+.ai-suggest-button:disabled {
+    background: #4a4599;
+    cursor: not-allowed;
+}
+
+.section-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 10px;
+}
+
+.section-input {
+    flex-grow: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #3a3f4b;
+    color: white;
+}
+
+.remove-button {
+    padding: 8px 12px;
+    background: darkred;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.add-section-button {
+    padding: 8px 12px;
+    background: #555;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.generate-button {
+    margin-top: 25px;
+    padding: 15px 25px;
+    font-size: 1.2em;
+    background: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.generate-button:disabled {
+    background: #004d00;
+    cursor: not-allowed;
+}
+
+.error-message {
+    color: orange;
+    margin-top: 15px;
+}
