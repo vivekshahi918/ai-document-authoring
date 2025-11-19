@@ -4,7 +4,6 @@ from typing import List
 import google.generativeai as genai
 from ..core.config import settings
 
-# Configure the Gemini API client with the key from your .env file
 genai.configure(api_key=settings.GEMINI_API_KEY)
 
 # Initialize the model
