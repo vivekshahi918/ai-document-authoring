@@ -58,6 +58,7 @@ const CreateProjectForm = ({ onProjectCreated }) => {
                         disabled={isSubmitting} // Disable select during submission
                     >
                         <option value="docx">Microsoft Word (.docx)</option>
+                        <option value="pptx">Microsoft PowerPoint (.pptx)</option>
                         {/* Add other document types here if needed */}
                     </select>
                 </div>

@@ -14,9 +14,7 @@ async def on_startup():
 
 # Define the list of allowed origins (URLs)
 origins = [
-    "http://localhost:3000",
-    "https://ai-document-authoring.vercel.app",
-    # We will add the Vercel URL here later
+    "https://ai-document-authoring.vercel.app"
 ]
 
 app.add_middleware(
