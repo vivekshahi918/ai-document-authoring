@@ -1,4 +1,5 @@
 # backend/app/services/llm_service.py
+from typing import List
 
 import google.generativeai as genai
 from ..core.config import settings

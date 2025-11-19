@@ -48,4 +48,4 @@ class Project(BaseModel):
     target_audience: Optional[str] = None
 
     class Config:
-        orm_mode = True  # To work with SQLAlchemy models
+        from_attributes = True  # To work with SQLAlchemy models

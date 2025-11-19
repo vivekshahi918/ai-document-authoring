@@ -14,5 +14,5 @@ class UserOut(BaseModel):
     email: EmailStr
 
     class Config:
-        orm_mode = True # Helps Pydantic work with ORM models like SQLAlchemy
+        from_attributes = True # Helps Pydantic work with ORM models like SQLAlchemy
         
