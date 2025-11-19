@@ -7,8 +7,7 @@ from ..core.config import settings
 genai.configure(api_key=settings.GEMINI_API_KEY)
 
 # Initialize the model
-# model = genai.GenerativeModel('models/gemini-pro-latest')
-model = genai.GenerativeModel('gemini-1.5-flash-latest')
+model = genai.GenerativeModel('models/gemini-pro-latest')
 
 async def generate_content_for_section(main_topic: str, section_title: str) -> str:
     """
