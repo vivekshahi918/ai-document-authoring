@@ -1,0 +1,12 @@
+# Environments
+.env
+.venv/
+/node_modules/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Build folders
+/build/
+/dist/
