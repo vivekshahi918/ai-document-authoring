@@ -38,7 +38,32 @@ async def read_user_projects(
     db: AsyncSession = Depends(get_db),
     current_user: UserModel = Depends(get_current_user)
 ):
-    return await crud.get_projects_by_owner(db=db, owner_id=current_user.id)
+    projects_from_db = await crud.get_projects_by_owner(db=db, owner_id=current_user.id)
+    
+    # Manually convert DB models to Pydantic schemas, calling get_sections() for each
+    response_projects = []
+    for project in projects_from_db:
+        project_schema = schemas.Project.from_orm(project)
+        project_schema.sections = project.get_sections() # Convert JSON string to list
+        response_projects.append(project_schema)
+        
+    return response_projects
+
+@router.get("/{project_id}", response_model=schemas.Project)
+async def read_project_details(
+    project_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: UserModel = Depends(get_current_user)
+):
+    result = await db.execute(select(Project).where(Project.id == project_id))
+    project = result.scalars().first()
+
+    if not project or project.owner_id != current_user.id:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    project_schema = schemas.Project.from_orm(project)
+    project_schema.sections = project.get_sections() # Convert JSON string to list
+    return project_schema
 
 @router.post("/{project_id}/generate", response_model=List[SectionSchema])
 async def generate_document_content(

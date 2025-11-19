@@ -1,50 +1,38 @@
-# # backend/app/models/project.py
-
-# from sqlalchemy import Column, Integer, String, ForeignKey, Text
-# from sqlalchemy.orm import relationship
-# from .user import Base # Re-use the Base from the user model
-
-# class Project(Base):
-#     __tablename__ = "projects"
-
-#     id = Column(Integer, primary_key=True, index=True)
-#     title = Column(String, index=True, nullable=False)
-#     document_type = Column(String, nullable=False) # Will be 'docx' or 'pptx'
-#     owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-
-#     # This creates the relationship so we can easily access the owner
-#     owner = relationship("User")
-
-# backend/app/models/project.py
-
 from sqlalchemy import Column, Integer, String, ForeignKey, Text
 from sqlalchemy.orm import relationship
 from .user import Base
 import json
+from typing import List
 
 class Project(Base):
     __tablename__ = "projects"
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True, nullable=False)
-    document_type = Column(String, nullable=False)   # 'docx' or 'pptx'
+    document_type = Column(String, nullable=False)
     owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
-    # New optional fields
-    main_topic = Column(String, nullable=True)
+    # --- Your New Fields ---
+    main_topic = Column(Text, nullable=True)
     tone = Column(String, nullable=True)
     target_audience = Column(String, nullable=True)
-
-    # Store list of sections as JSON text
+    
+    # Store the list of section titles as a JSON string
     sections = Column(Text, nullable=True)
+    # -----------------------
 
     owner = relationship("User")
 
-    # Helper methods to convert sections JSON <-> list
-    def set_sections(self, sections_list):
+    # Helper methods to safely handle the JSON conversion
+    def set_sections(self, sections_list: List[str]):
+        """Converts a Python list to a JSON string before saving."""
         self.sections = json.dumps(sections_list)
 
-    def get_sections(self):
+    def get_sections(self) -> List[str]:
+        """Converts the JSON string from the DB back into a Python list."""
         if self.sections:
-            return json.loads(self.sections)
+            try:
+                return json.loads(self.sections)
+            except (json.JSONDecodeError, TypeError):
+                return []
         return []
