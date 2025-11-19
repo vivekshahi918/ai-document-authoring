@@ -22,7 +22,7 @@ const LoginPage = () => {
         params.append('password', password);
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/v1/auth/login', params);
+            const response = await api.post('/auth/login', params);
 
             const token = response.data.access_token;
             localStorage.setItem('token', token);

@@ -18,9 +18,9 @@ const RegisterPage = () => {
         e.preventDefault();
 
         try {
-            const response = await axios.post('http://127.0.0.1:8000/api/v1/auth/register', {
-                email: email,
-                password: password
+            const response = await api.post('/auth/register', {
+            email: email,
+            password: password
             });
 
             toast.success(`Registration successful for ${response.data.email}! Please log in.`); // <-- SUCCESS notification
