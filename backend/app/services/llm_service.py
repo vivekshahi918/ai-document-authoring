@@ -10,7 +10,7 @@ genai.configure(api_key=settings.GEMINI_API_KEY)
 
 # --- THIS IS THE CRITICAL CHANGE ---
 # We are switching to a faster model with a much higher free rate limit.
-model = genai.GenerativeModel('gemini-pro')
+model = genai.GenerativeModel("gemini-1.5-flash")
 # ------------------------------------
 
 async def generate_content_for_section(main_topic: str, section_title: str) -> str:
