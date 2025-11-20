@@ -10,7 +10,8 @@ configure(api_key=settings.GEMINI_API_KEY)
 
 # Updated model with mandatory safety settings
 model = GenerativeModel(
-    model_name="gemini-1.5-flash",
+    model_name="gemini-1.5-flash-001",
+
     safety_settings=[
         {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
         {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE"},
