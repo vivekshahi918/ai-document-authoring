@@ -3,9 +3,10 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: process.env.REACT_APP_API_BASE_URL,
-    //  || 'https://ai-document-authoring-production.up.railway.app/api/v1',
-    timeout: 10000,
+    baseURL: process.env.REACT_APP_API_BASE_URL 
+    // baseURL: 'http://127.0.0.1:8000/api/v1',
+     || 'https://ai-document-authoring-production.up.railway.app/api/v1',
+    timeout: 0,
     // headers: {
     //     'Content-Type': 'application/json',
     // }

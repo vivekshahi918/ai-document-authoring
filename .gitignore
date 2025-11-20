@@ -1,13 +1,19 @@
 # Environments
 .env
 .venv/
-/node_modules/
+backend/.env
+frontend/.env
 
 # Python cache
 __pycache__/
 *.pyc
 
+# Node modules
+node_modules/
+frontend/node_modules/
+
 # Build folders
-/build/
-/dist/
-/frontend/node_modules
+build/
+dist/
+frontend/build/
+backend/build/

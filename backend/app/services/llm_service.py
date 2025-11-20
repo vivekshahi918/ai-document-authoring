@@ -1,63 +1,65 @@
-# backend/app/services/llm_service.py
-from typing import List
+# backend/app/services/llm_service.py - FINAL CORRECTED VERSION
 
+from typing import List
 import google.generativeai as genai
 from ..core.config import settings
+import traceback # <-- IMPORT THIS FOR DETAILED LOGGING
 
+
+# Configure the Gemini API client with the key from your environment variables
 genai.configure(api_key=settings.GEMINI_API_KEY)
 
-# Initialize the model
-model = genai.GenerativeModel('models/gemini-pro-latest')
+# --- THIS IS THE CRITICAL CHANGE ---
+# We are switching to a faster model with a much higher free rate limit.
+model = genai.GenerativeModel('gemini-2.5-pro')
+print("🔥 USING MODEL:", model.model_name)
+# ------------------------------------
+
 
 async def generate_content_for_section(main_topic: str, section_title: str) -> str:
     """
     Generates content for a specific document section using the Gemini API.
     """
     try:
-        # Create a specific, context-aware prompt
         prompt = (
             f"You are an expert business document writer. "
-            f"Your task is to write the content for a specific section of a document. "
             f"The main topic of the document is: '{main_topic}'. "
             f"The specific section you need to write is: '{section_title}'. "
             f"Please write detailed, professional content for this section. "
             f"Do not include the section title itself in your response, only the content."
         )
-
         response = await model.generate_content_async(prompt)
-        
-        # Make sure to handle potential safety blocks
-        if response.parts:
-            return response.text
-        else:
-            return "Content could not be generated due to safety settings."
-
+        return response.text
     except Exception as e:
-        print(f"An error occurred during content generation: {e}")
-        return "Error: Could not generate content."
-    
+        # This will now print the EXACT error from Google to your backend terminal
+        print("--- DETAILED ERROR IN generate_content_for_section ---")
+        traceback.print_exc()
+        print("----------------------------------------------------")
+        return "Error: Could not generate content due to an API issue."
+
+
 async def refine_content_for_section(original_content: str, refinement_prompt: str) -> str:
+    # ... (This function is likely fine, but we'll add logging just in case)
     try:
-        # Create a prompt specifically for editing/refining
         prompt = (
             f"You are a world-class editor. Your task is to refine the following text based on a specific instruction.\n\n"
             f"--- Original Text ---\n{original_content}\n\n"
             f"--- Instruction ---\n{refinement_prompt}\n\n"
-            f"Please provide only the fully refined text as your response, without any extra commentary or conversational text."
+            f"Please provide only the fully refined text as your response."
         )
-        
         response = await model.generate_content_async(prompt)
-        
-        if response.parts:
-            return response.text
-        else:
-            return "Content could not be refined due to safety settings."
-
+        return response.text
     except Exception as e:
-        print(f"An error occurred during content refinement: {e}")
-        return "Error: Could not refine content."    
-    
+        print("--- DETAILED ERROR IN refine_content_for_section ---")
+        traceback.print_exc()
+        print("--------------------------------------------------")
+        return "Error: Could not refine content due to an API issue."
+
+
 async def generate_outline(main_topic: str, doc_type: str) -> List[str]:
+    """
+    Generates a list of section headers or slide titles for a given topic.
+    """
     item_type = "section headers" if doc_type == "docx" else "slide titles"
     try:
         prompt = (
@@ -67,8 +69,10 @@ async def generate_outline(main_topic: str, doc_type: str) -> List[str]:
             f"For example: Introduction, Market Analysis, Competitive Landscape, Conclusion"
         )
         response = await model.generate_content_async(prompt)
-        # Simple parsing
+        # Simple parsing to convert comma-separated string to a list
         return [item.strip() for item in response.text.split(',')]
     except Exception as e:
-        print(f"An error occurred during outline generation: {e}")
-        return []    
+        print("--- DETAILED ERROR IN generate_outline ---")
+        traceback.print_exc()
+        print("----------------------------------------")
+        return [] # Return an empty list on failure
