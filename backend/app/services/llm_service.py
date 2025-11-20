@@ -1,17 +1,16 @@
 # backend/app/services/llm_service.py - FINAL CORRECTED VERSION
 
 from typing import List
-import google.generativeai as genai
+from google.generativeai import GenerativeModel, configure
 from ..core.config import settings
 import traceback  # <-- IMPORT THIS FOR DETAILED LOGGING
 
 # Configure the Gemini API client with the key from your environment variables
-genai.configure(api_key=settings.GEMINI_API_KEY)
+configure(api_key=settings.GEMINI_API_KEY)
 
-# --- THIS IS THE CRITICAL CHANGE ---
-# We are switching to a faster model with a much higher free rate limit.
-model = genai.GenerativeModel("gemini-1.5-flash")
-# ------------------------------------
+model = GenerativeModel(
+    model_name="gemini-1.5-flash"
+)
 
 async def generate_content_for_section(main_topic: str, section_title: str) -> str:
     """
