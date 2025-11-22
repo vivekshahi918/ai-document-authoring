@@ -1,4 +1,3 @@
-/* frontend/src/components/CreateProjectForm.css - NEW FILE */
 
 .create-project-form-container {
     background: #2a2a2e;
@@ -39,7 +38,7 @@
     border-radius: 5px;
     color: #fff;
     font-size: 1em;
-    box-sizing: border-box; /* Ensures padding doesn't affect width */
+    box-sizing: border-box; 
     transition: border-color 0.3s, box-shadow 0.3s;
 }
 
@@ -50,7 +49,6 @@
     box-shadow: 0 0 5px #02cefcf7;
 }
 
-/* --- BUTTON STYLES --- */
 
 .create-project-button {
     width: 100%;
@@ -69,15 +67,13 @@
     background-color: #0056b3;
 }
 
-/* Style for when the button is disabled but NOT submitting */
 .create-project-button:disabled {
     cursor: not-allowed;
     opacity: 0.6;
 }
 
-/* Style for when the submission is active */
 .create-project-button.submitting {
-    background-color: #28a745; /* Green background */
-    color: #ffffff;             /* White font */
-    opacity: 1;                 /* Ensure it's fully visible */
+    background-color: #28a745; 
+    color: #ffffff;          
+    opacity: 1;                
 }

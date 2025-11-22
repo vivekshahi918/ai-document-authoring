@@ -1,9 +1,8 @@
-// frontend/src/pages/LoginPage.js - UPDATED
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
-import { toast } from 'react-toastify'; // <-- IMPORT toast
+import { toast } from 'react-toastify';
 
 import './AuthPage.css';
 import logo from '../assets/logo.png';
@@ -27,16 +26,15 @@ const LoginPage = () => {
             const token = response.data.access_token;
             localStorage.setItem('token', token);
 
-            toast.success('Login Successful!'); // <-- SUCCESS notification
+            toast.success('Login Successful!'); 
 
-            // Redirect to the dashboard after a short delay
             setTimeout(() => {
                 navigate('/dashboard');
-            }, 2000); // 2-second delay
+            }, 2000); 
 
         } catch (error) {
             const errorMessage = error.response?.data?.detail || 'Login failed. Please check your credentials.';
-            toast.error(errorMessage); // <-- ERROR notification
+            toast.error(errorMessage); 
             console.error('Login failed!', error);
         }
     };

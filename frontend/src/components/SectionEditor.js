@@ -1,21 +1,17 @@
-// frontend/src/components/SectionEditor.js - MERGED AND FINAL
 
-import React, { useState, useEffect } from 'react'; // <-- Added useEffect
+import React, { useState, useEffect } from 'react'; 
 import api from '../services/api';
 
 const SectionEditor = ({ section, onContentUpdate }) => {
-    // --- All original states ---
     const [refinePrompt, setRefinePrompt] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [comment, setComment] = useState(section.comment || '');
     const [feedback, setFeedback] = useState(section.feedback || null);
 
-    // --- NEW HISTORY STATE ---
     const [history, setHistory] = useState([]);
     const [showHistory, setShowHistory] = useState(false);
 
-    // --- NEW useEffect TO FETCH HISTORY ON LOAD ---
     useEffect(() => {
         const fetchHistory = async () => {
             try {
@@ -27,9 +23,8 @@ const SectionEditor = ({ section, onContentUpdate }) => {
         };
 
         fetchHistory();
-    }, [section.id]); // This runs once when the component first loads
+    }, [section.id]); 
 
-    // --- MODIFIED REFINEMENT HANDLER (to update history) ---
     const handleRefine = async () => {
         if (!refinePrompt.trim()) {
             setError('Please enter a refinement instruction.');
@@ -46,10 +41,9 @@ const SectionEditor = ({ section, onContentUpdate }) => {
 
             onContentUpdate(section.id, response.data.content);
             
-            // Instantly update the history list in the UI without needing a re-fetch
             const newHistoryEntry = {
                 prompt: refinePrompt,
-                created_at: new Date().toISOString() // Use current time for immediate feedback
+                created_at: new Date().toISOString() 
             };
             setHistory([newHistoryEntry, ...history]);
 
@@ -62,7 +56,6 @@ const SectionEditor = ({ section, onContentUpdate }) => {
         }
     };
 
-    // --- Original feedback and comment handlers (no changes needed) ---
     const handleFeedback = async (newFeedback) => {
         setFeedback(newFeedback);
         try {
@@ -84,9 +77,6 @@ const SectionEditor = ({ section, onContentUpdate }) => {
         }
     };
 
-    // ------------------------------------------------------------
-    // UI - Integrating the history section
-    // ------------------------------------------------------------
     return (
         <div style={{ marginBottom: '20px', background: '#282c34', padding: '20px', borderRadius: '8px', border: '1px solid #444' }}>
             {/* --- All of your existing JSX is preserved here --- */}

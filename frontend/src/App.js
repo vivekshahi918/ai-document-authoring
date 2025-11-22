@@ -1,9 +1,8 @@
-// frontend/src/App.js - UPDATED
 
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify'; // <-- IMPORT ToastContainer
-import 'react-toastify/dist/ReactToastify.css'; // <-- IMPORT the CSS for styling
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; 
 
 import EditorPage from './pages/EditorPage';
 import LoginPage from './pages/LoginPage';

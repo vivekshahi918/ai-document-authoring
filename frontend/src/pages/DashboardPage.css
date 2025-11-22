@@ -1,19 +1,18 @@
-/* frontend/src/pages/DashboardPage.css */
 
 .dashboard-container {
     display: flex;
-    flex-direction: column; /* Changed to column for dashboard layout */
+    flex-direction: column; 
     min-height: 95vh;
     width: 100%;
     max-width: 1200px;
-    padding: 80px; /* Added more padding for content */
+    padding: 80px;
     background: #222;
     border-radius: 12px;
     overflow: hidden;
     position: relative;
     box-shadow: 1px 1px 20px #02cefcf7,
                 1px 1px 40px #01f9ecf7;
-    color: white; /* Ensure text is white */
+    color: white;
     margin-top: 10px;
     margin-bottom: 20px;
 }
@@ -32,7 +31,7 @@
 
 .logout-button {
     padding: 10px 20px;
-    background-color: #ff0057; /* Using a color from your other styles */
+    background-color: #ff0057; 
     border: none;
     border-radius: 5px;
     color: #fff;
@@ -45,9 +44,6 @@
     background-color: #d60049;
 }
 
-/* --- NEW STYLES FOR THE CREATE PROJECT FORM --- */
-
-/* This targets the container of the form, assuming one exists */
 .create-project-form {
     background: #2a2a2e;
     padding: 25px;
@@ -109,7 +105,6 @@
 }
 
 
-/* --- EXISTING PROJECT LIST STYLES --- */
 
 .project-list-item {
     background: #333;
@@ -122,5 +117,5 @@
 
 .project-list-item:hover {
     background-color: #444;
-    transform: translateY(-2px); /* Add a subtle hover effect */
+    transform: translateY(-2px); 
 }

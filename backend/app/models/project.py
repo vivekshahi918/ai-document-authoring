@@ -12,18 +12,13 @@ class Project(Base):
     document_type = Column(String, nullable=False)
     owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
-    # --- Your New Fields ---
     main_topic = Column(Text, nullable=True)
     tone = Column(String, nullable=True)
     target_audience = Column(String, nullable=True)
-    
-    # Store the list of section titles as a JSON string
     sections = Column(Text, nullable=True)
-    # -----------------------
+    
 
     owner = relationship("User")
-
-    # Helper methods to safely handle the JSON conversion
     def set_sections(self, sections_list: List[str]):
         """Converts a Python list to a JSON string before saving."""
         self.sections = json.dumps(sections_list)

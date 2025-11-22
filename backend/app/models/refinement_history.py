@@ -1,4 +1,3 @@
-# backend/app/models/refinement_history.py
 
 from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime
 from sqlalchemy.sql import func

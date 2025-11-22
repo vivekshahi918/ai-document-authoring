@@ -1,9 +1,8 @@
-// frontend/src/pages/RegisterPage.js - UPDATED
 
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // <-- IMPORT useNavigate
+import { Link, useNavigate } from 'react-router-dom'; 
 import api from '../services/api';
-import { toast } from 'react-toastify'; // <-- IMPORT toast
+import { toast } from 'react-toastify'; 
 
 import './AuthPage.css';
 import logo from '../assets/logo.png';
@@ -12,7 +11,7 @@ const RegisterPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [hoverState, setHoverState] = useState('default');
-    const navigate = useNavigate(); // <-- Hook for navigation
+    const navigate = useNavigate(); 
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -25,14 +24,14 @@ const RegisterPage = () => {
 
             toast.success(`Registration successful for ${response.data.email}! Please log in.`); // <-- SUCCESS notification
 
-            // Redirect to the login page after a short delay
+        
             setTimeout(() => {
                 navigate('/login');
-            }, 2000); // 3-second delay
+            }, 2000); 
 
         } catch (error) {
             const errorMessage = error.response?.data?.detail || 'An unexpected error occurred. Please try again.';
-            toast.error(errorMessage); // <-- ERROR notification
+            toast.error(errorMessage); 
             console.error('Registration failed!', error);
         }
     };

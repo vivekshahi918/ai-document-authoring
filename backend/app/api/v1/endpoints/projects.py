@@ -1,9 +1,9 @@
-# backend/app/api/v1/endpoints/projects.py - CORRECTED
+
 import asyncio
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.responses import StreamingResponse # Import for file streaming
+from fastapi.responses import StreamingResponse 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select # Import for DB queries
+from sqlalchemy.future import select
 from sqlalchemy import delete
 from typing import List
 
@@ -11,7 +11,7 @@ from .... import crud, schemas
 from ....db import AsyncSessionLocal
 from .auth import get_current_user
 from ....models.user import User as UserModel
-from ....models.project import Project # <--- THIS IS THE MISSING IMPORT
+from ....models.project import Project 
 from ....models.document_section import DocumentSection
 from ....services import llm_service, document_service
 from ....services.document_service import SectionData
@@ -39,11 +39,10 @@ async def read_user_projects(
 ):
     projects_from_db = await crud.get_projects_by_owner(db=db, owner_id=current_user.id)
     
-    # Manually convert DB models to Pydantic schemas, calling get_sections() for each
     response_projects = []
     for project in projects_from_db:
         project_schema = schemas.Project.from_orm(project)
-        project_schema.sections = project.get_sections() # Convert JSON string to list
+        project_schema.sections = project.get_sections() 
         response_projects.append(project_schema)
         
     return response_projects
@@ -61,7 +60,7 @@ async def read_project_details(
         raise HTTPException(status_code=404, detail="Project not found")
 
     project_schema = schemas.Project.from_orm(project)
-    project_schema.sections = project.get_sections() # Convert JSON string to list
+    project_schema.sections = project.get_sections() 
     return project_schema
 
 @router.post("/{project_id}/generate", response_model=List[SectionSchema])
@@ -72,7 +71,6 @@ async def generate_document_content(
     current_user: UserModel = Depends(get_current_user)
 ):
     
-    # Delete old sections
     await db.execute(
         delete(DocumentSection).where(DocumentSection.project_id == project_id)
     )
@@ -94,10 +92,9 @@ async def generate_document_content(
         db.add(db_section)
         generated_sections.append(db_section)
 
-        # --- ADD THIS LINE ---
-        # Wait for 1.5 seconds before the next API call to avoid rate limiting
+
         await asyncio.sleep(1.5)
-        # --------------------
+
     
     await db.commit()
 
@@ -112,14 +109,13 @@ async def export_project_document(
     db: AsyncSession = Depends(get_db),
     current_user: UserModel = Depends(get_current_user)
 ):
-    # 1. Fetch the project details
+
     result = await db.execute(select(Project).where(Project.id == project_id))
     project = result.scalars().first()
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
     # TODO: Verify current_user owns this project
 
-    # 2. Fetch all the refined sections for this project
     sections_result = await db.execute(
         select(DocumentSection)
         .where(DocumentSection.project_id == project_id)
@@ -138,11 +134,10 @@ async def export_project_document(
     
     file_stream = None
     media_type = ""
-    # Sanitize the title to create a safe filename
     safe_title = "".join(c for c in project.title if c.isalnum() or c in (' ', '_')).rstrip()
     filename = f"{safe_title.replace(' ', '_')}.unknown"
 
-    # --- THIS IS THE CORRECTED LOGIC BLOCK ---
+
     if project.document_type == 'docx':
         file_stream = document_service.create_word_document(section_data)
         media_type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
@@ -152,11 +147,9 @@ async def export_project_document(
         media_type = "application/vnd.openxmlformats-officedocument.presentationml.presentation"
         filename = f"{safe_title}.pptx"
     else:
-        # This else block is the key.
+       
         raise HTTPException(status_code=400, detail="Unsupported document type")
-    # -----------------------------------------
-
-    # 5. Stream the file back to the client
+    
     return StreamingResponse(
     file_stream,
     media_type=media_type,

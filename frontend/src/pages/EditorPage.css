@@ -1,4 +1,3 @@
-/* frontend/src/pages/EditorPage.css */
 
 .editor-page-container {
     padding: 30px;
@@ -26,7 +25,7 @@
 
 .editor-actions {
     display: flex;
-    gap: 15px; /* Adds space between buttons */
+    gap: 15px; 
 }
 
 .editor-button {

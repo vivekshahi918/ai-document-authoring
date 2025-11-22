@@ -1,9 +1,9 @@
-// frontend/src/pages/EditorPage.js - UPDATED WITH CSS CLASSES
+
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../services/api';
 import SectionEditor from '../components/SectionEditor';
-import './EditorPage.css'; // <-- IMPORT THE NEW CSS FILE
+import './EditorPage.css'; 
 
 const EditorPage = () => {
     const { projectId } = useParams();
@@ -21,15 +21,12 @@ const EditorPage = () => {
                 const response = await api.get(`/projects/${projectId}`);
                 const project = response.data;
                 
-                // Populate the form fields with data from the backend
                 if (project.main_topic) {
                     setMainTopic(project.main_topic);
                 }
                 if (project.sections && project.sections.length > 0) {
-                    // Convert the saved list of titles into the state structure
                     setSections(project.sections.map(title => ({ title: title })));
                 } else {
-                    // Ensure there's at least one empty section if none are saved
                     setSections([{ title: '' }]);
                 }
             } catch (err) {
@@ -117,7 +114,6 @@ const EditorPage = () => {
     try {
         const response = await api.get(`/projects/${projectId}/export`, { responseType: 'blob' });
 
-        // FIX #1 — Create blob **with correct MIME type**
         const file = new Blob([response.data], {
             type: response.headers['content-type']
         });
@@ -127,7 +123,6 @@ const EditorPage = () => {
         const link = document.createElement('a');
         link.href = url;
 
-        // FIX #2 — Extract filename correctly
         const cd = response.headers['content-disposition'];
         let filename = "document";
 

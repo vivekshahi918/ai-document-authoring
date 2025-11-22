@@ -1,4 +1,4 @@
-# backend/app/crud/crud_project.py - FINAL VERSION
+
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -7,16 +7,10 @@ from ..schemas.project import ProjectCreate
 
 async def create_project(db: AsyncSession, project: ProjectCreate, owner_id: int) -> Project:
     
-    # Convert the Pydantic schema to a dictionary
     project_data = project.dict()
     
-    # Pop the 'sections' list because it needs special handling via the model's method
     sections_list = project_data.pop("sections", None)
-
-    # Create the Project database object with the main data
     db_project = Project(**project_data, owner_id=owner_id)
-
-    # If a sections list was provided, use the model's helper method to convert it to a JSON string
     if sections_list:
         db_project.set_sections(sections_list)
 

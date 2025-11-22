@@ -1,8 +1,8 @@
-// frontend/src/pages/DashboardPage.js - UPDATED
+
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { toast } from 'react-toastify'; // <-- IMPORT toast
+import { toast } from 'react-toastify'; 
 import api from '../services/api';
 import CreateProjectForm from '../components/CreateProjectForm';
 import './DashboardPage.css';
@@ -22,10 +22,8 @@ const DashboardPage = () => {
                 setError('');
             } catch (err) {
                 setError('Failed to fetch projects. Your session may have expired.');
-                // Optionally, show an error toast for fetch failure
                 toast.error('Failed to fetch projects. Please log in again.');
                 console.error(err);
-                // Redirect to login if the token is invalid (optional but good practice)
                 if (err.response && err.response.status === 401) {
                     localStorage.removeItem('token');
                     setTimeout(() => navigate('/login'), 2000);
@@ -35,24 +33,19 @@ const DashboardPage = () => {
             }
         };
         fetchProjects();
-    }, [navigate]); // Add navigate to dependency array
+    }, [navigate]); 
 
     const handleLogout = () => {
-        // 1. Remove the token from local storage
         localStorage.removeItem('token');
-
-        // 2. Show a success notification
         toast.success('Logout Successful!');
 
-        // 3. Redirect to the login page after a short delay
         setTimeout(() => {
             navigate('/login');
-        }, 2000); // 2-second delay to allow the user to see the message
+        }, 2000); 
     };
 
     const handleProjectCreated = (newProject) => {
         setProjects([newProject, ...projects]);
-        // Give feedback that the project was created
         toast.success(`Project "${newProject.title}" created successfully!`);
     };
 

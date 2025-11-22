@@ -1,14 +1,13 @@
-// frontend/src/components/CreateProjectForm.js - UPDATED
 
 import React, { useState } from 'react';
 import api from '../services/api';
 import { toast } from 'react-toastify';
-import './CreateProjectForm.css'; // <-- IMPORT THE NEW CSS FILE
+import './CreateProjectForm.css'; 
 
 const CreateProjectForm = ({ onProjectCreated }) => {
     const [title, setTitle] = useState('');
     const [documentType, setDocumentType] = useState('docx');
-    const [isSubmitting, setIsSubmitting] = useState(false); // <-- STATE TO TRACK SUBMISSION
+    const [isSubmitting, setIsSubmitting] = useState(false); 
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -17,20 +16,20 @@ const CreateProjectForm = ({ onProjectCreated }) => {
             return;
         }
 
-        setIsSubmitting(true); // <-- START SUBMISSION
+        setIsSubmitting(true); 
 
         try {
             const response = await api.post('/projects/', {
                 title: title,
                 document_type: documentType,
             });
-            onProjectCreated(response.data); // Notify parent component
-            setTitle(''); // Clear the input field
+            onProjectCreated(response.data);
+            setTitle('');
         } catch (err) {
             toast.error('Failed to create project. Please try again.');
             console.error(err);
         } finally {
-            setIsSubmitting(false); // <-- END SUBMISSION
+            setIsSubmitting(false); 
         }
     };
 
@@ -46,7 +45,7 @@ const CreateProjectForm = ({ onProjectCreated }) => {
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         placeholder="e.g., Q4 Marketing Report"
-                        disabled={isSubmitting} // Disable input during submission
+                        disabled={isSubmitting} 
                     />
                 </div>
                 <div className="form-group">
@@ -55,7 +54,7 @@ const CreateProjectForm = ({ onProjectCreated }) => {
                         id="documentType"
                         value={documentType}
                         onChange={(e) => setDocumentType(e.target.value)}
-                        disabled={isSubmitting} // Disable select during submission
+                        disabled={isSubmitting} 
                     >
                         <option value="docx">Microsoft Word (.docx)</option>
                         <option value="pptx">Microsoft PowerPoint (.pptx)</option>

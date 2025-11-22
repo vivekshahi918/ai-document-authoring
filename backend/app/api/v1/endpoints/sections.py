@@ -1,4 +1,3 @@
-# backend/app/api/v1/endpoints/sections.py - FULLY REPLACED
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -10,7 +9,7 @@ from ....db import AsyncSessionLocal
 from .auth import get_current_user
 from ....models.user import User as UserModel
 from ....models.document_section import DocumentSection
-from ....models.refinement_history import RefinementHistory # <-- Import new model
+from ....models.refinement_history import RefinementHistory 
 from ....services import llm_service
 
 router = APIRouter()
@@ -32,15 +31,13 @@ async def refine_section_content(
     if not db_section:
         raise HTTPException(status_code=404, detail="Section not found")
     
-    # --- HISTORY LOGIC: START ---
-    # Create a history entry *before* changing the content
+
     history_entry = RefinementHistory(
         prompt=request.prompt,
         previous_content=db_section.content,
         section_id=section_id
     )
     db.add(history_entry)
-    # --- HISTORY LOGIC: END ---
 
     refined_content = await llm_service.refine_content_for_section(
         original_content=db_section.content,
@@ -48,7 +45,7 @@ async def refine_section_content(
     )
     
     db_section.content = refined_content
-    await db.commit() # This saves both the history entry and the updated content
+    await db.commit() 
     await db.refresh(db_section)
     
     return db_section
@@ -75,7 +72,7 @@ async def update_section_details(
     await db.refresh(db_section)
     return db_section
 
-# --- NEW ENDPOINT TO FETCH HISTORY ---
+
 @router.get("/{section_id}/history", response_model=List[schemas.generation.RefinementHistoryOut])
 async def get_section_refinement_history(
     section_id: int,
@@ -85,7 +82,7 @@ async def get_section_refinement_history(
     result = await db.execute(
         select(RefinementHistory)
         .where(RefinementHistory.section_id == section_id)
-        .order_by(RefinementHistory.created_at.desc()) # Show newest first
+        .order_by(RefinementHistory.created_at.desc()) 
     )
     history = result.scalars().all()
     return history

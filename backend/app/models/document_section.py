@@ -1,9 +1,7 @@
-# backend/app/models/document_section.py - MODIFIED
 
 from sqlalchemy import Column, Integer, String, Text, ForeignKey
 from sqlalchemy.orm import relationship
-from .user import Base # Use the same Base as other models
-# No need to import RefinementHistory here, SQLAlchemy handles it via the relationship string
+from .user import Base
 
 class DocumentSection(Base):
     __tablename__ = "document_sections"
@@ -18,6 +16,5 @@ class DocumentSection(Base):
 
     project = relationship("Project")
     
-    # --- NEW RELATIONSHIP ---
-    # This tells SQLAlchemy that a section can have many history records
+   
     history_entries = relationship("RefinementHistory", back_populates="section", cascade="all, delete-orphan")
