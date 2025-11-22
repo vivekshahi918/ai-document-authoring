@@ -47,26 +47,30 @@ async def read_user_projects(
         
     return response_projects
 
-@router.get("/", response_model=List[schemas.Project])
-async def read_user_projects(
+@router.get("/{project_id}", response_model=schemas.Project)
+async def read_project_details(
+    project_id: int,
     db: AsyncSession = Depends(get_db),
     current_user: UserModel = Depends(get_current_user)
 ):
-    projects_from_db = await crud.get_projects_by_owner(db=db, owner_id=current_user.id)
-    
-    response_projects = []
-    for project in projects_from_db:
-        project_schema = schemas.Project.from_orm(project)
-        
-        raw_sections = project.get_sections()
-        if raw_sections and isinstance(raw_sections[0], str):
-             project_schema.sections = [{"title": t} for t in raw_sections]
-        else:
-             project_schema.sections = raw_sections
+    result = await db.execute(select(Project).where(Project.id == project_id))
+    project = result.scalars().first()
 
-        response_projects.append(project_schema)
-        
-    return response_projects
+    if not project or project.owner_id != current_user.id:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    sections_result = await db.execute(
+        select(DocumentSection)
+        .where(DocumentSection.project_id == project_id)
+        .order_by(DocumentSection.section_order)
+    )
+    generated_sections = sections_result.scalars().all()
+
+    project_schema = schemas.Project.from_orm(project)
+    if generated_sections:
+        project_schema.sections = generated_sections
+    
+    return project_schema
 
 @router.post("/{project_id}/generate", response_model=List[SectionSchema])
 async def generate_document_content(

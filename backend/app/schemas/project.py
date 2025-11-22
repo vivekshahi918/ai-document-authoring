@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List, Optional, Union
+from typing import List, Optional, Union 
 
 class ProjectSection(BaseModel):
     id: Optional[int] = None
@@ -9,10 +9,10 @@ class ProjectSection(BaseModel):
 
     class Config:
         from_attributes = True
+
 class ProjectCreate(BaseModel):
     title: str
     document_type: str  
-
     main_topic: Optional[str] = None
     tone: Optional[str] = None
     sections: Optional[List[str]] = None
@@ -26,7 +26,7 @@ class Project(BaseModel):
 
     main_topic: Optional[str] = None
     tone: Optional[str] = None
-    sections: Optional[List[ProjectSection]] = []
+    sections: Optional[Union[List[ProjectSection], List[str]]] = []
     
     target_audience: Optional[str] = None
 
