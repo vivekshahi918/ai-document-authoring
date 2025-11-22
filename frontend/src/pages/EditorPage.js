@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../services/api';
@@ -20,15 +19,28 @@ const EditorPage = () => {
             try {
                 const response = await api.get(`/projects/${projectId}`);
                 const project = response.data;
-                
+
                 if (project.main_topic) {
                     setMainTopic(project.main_topic);
                 }
+
                 if (project.sections && project.sections.length > 0) {
-                    setSections(project.sections.map(title => ({ title: title })));
+                    
+                    if (typeof project.sections[0] === 'object') {
+                        setSections(project.sections.map(s => ({ title: s.title })));
+                        
+                        const hasContent = project.sections.some(s => s.content && s.content.trim() !== "");
+                        if (hasContent) {
+                            setGeneratedContent(project.sections);
+                        }
+                    } 
+                    else {
+                        setSections(project.sections.map(title => ({ title: title })));
+                    }
                 } else {
                     setSections([{ title: '' }]);
                 }
+
             } catch (err) {
                 setError("Failed to load project details. You may be offline or the project doesn't exist.");
                 console.error(err);
@@ -62,7 +74,9 @@ const EditorPage = () => {
         setError('');
         try {
             const response = await api.post(`/projects/${projectId}/suggest-outline`, { main_topic: mainTopic });
-            const suggestedSections = response.data.map(title => ({ title }));
+
+            const data = response.data;
+            const suggestedSections = data.map(item => ({ title: item.title || item }));
             setSections(suggestedSections);
         } catch (err) {
             console.error(err);
@@ -108,45 +122,43 @@ const EditorPage = () => {
     };
 
     const handleExport = async () => {
-    setIsExporting(true);
-    setError('');
+        setIsExporting(true);
+        setError('');
 
-    try {
-        const response = await api.get(`/projects/${projectId}/export`, { responseType: 'blob' });
+        try {
+            const response = await api.get(`/projects/${projectId}/export`, { responseType: 'blob' });
 
-        const file = new Blob([response.data], {
-            type: response.headers['content-type']
-        });
+            const file = new Blob([response.data], {
+                type: response.headers['content-type']
+            });
 
-        const url = window.URL.createObjectURL(file);
+            const url = window.URL.createObjectURL(file);
+            const link = document.createElement('a');
+            link.href = url;
 
-        const link = document.createElement('a');
-        link.href = url;
+            const cd = response.headers['content-disposition'];
+            let filename = "document";
 
-        const cd = response.headers['content-disposition'];
-        let filename = "document";
-
-        if (cd) {
-            const match = cd.match(/filename="?([^"]+)"?/);
-            if (match && match[1]) {
-                filename = match[1];
+            if (cd) {
+                const match = cd.match(/filename="?([^"]+)"?/);
+                if (match && match[1]) {
+                    filename = match[1];
+                }
             }
+
+            link.setAttribute('download', filename);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+
+        } catch (err) {
+            console.error(err);
+            setError('Failed to export document. Please ensure content was generated.');
+        } finally {
+            setIsExporting(false);
         }
-
-        link.setAttribute('download', filename);
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-
-        window.URL.revokeObjectURL(url);
-
-    } catch (err) {
-        console.error(err);
-        setError('Failed to export document. Please ensure content was generated.');
-    } finally {
-        setIsExporting(false);
-    }
-};
+    };
 
     return (
         <div className="editor-page-container">
@@ -206,6 +218,7 @@ const EditorPage = () => {
                 {error && <p className="error-message">{error}</p>}
             </div>
 
+            {/* THIS IS THE PART THAT DISPLAYS THE EDITOR */}
             {generatedContent.length > 0 && (
                 <div style={{ marginTop: '40px' }}>
                     <h2>2. Generated Document (Interactive)</h2>
