@@ -90,10 +90,19 @@ async def generate_document_content(
     db: AsyncSession = Depends(get_db),
     current_user: UserModel = Depends(get_current_user)
 ):
+    result = await db.execute(select(Project).where(Project.id == project_id))
+    project = result.scalars().first()
+    
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    project.main_topic = request.main_topic
+    db.add(project)
     
     await db.execute(
         delete(DocumentSection).where(DocumentSection.project_id == project_id)
     )
+    
     await db.commit()
     
     generated_sections = []
@@ -112,10 +121,7 @@ async def generate_document_content(
         db.add(db_section)
         generated_sections.append(db_section)
 
-
         await asyncio.sleep(1.5)
-
-    
     await db.commit()
 
     for section in generated_sections:

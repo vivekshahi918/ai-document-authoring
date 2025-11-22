@@ -6,6 +6,8 @@ class ProjectSection(BaseModel):
     title: str
     content: Optional[str] = None  
     section_order: Optional[int] = None
+    user_notes: Optional[str] = None
+    feedback: Optional[str] = None
 
     class Config:
         from_attributes = True
