@@ -1,4 +1,3 @@
-
 import asyncio
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import StreamingResponse 
@@ -17,6 +16,7 @@ from ....services import llm_service, document_service
 from ....services.document_service import SectionData
 from ....schemas.generation import GenerateRequest, DocumentSection as SectionSchema
 from ....schemas.generation import TopicRequest
+from ....schemas.project import ProjectSection 
 
 router = APIRouter()
 
@@ -42,7 +42,13 @@ async def read_user_projects(
     response_projects = []
     for project in projects_from_db:
         project_schema = schemas.Project.from_orm(project)
-        project_schema.sections = project.get_sections() 
+        
+        raw_sections = project.get_sections()
+        if raw_sections and isinstance(raw_sections[0], str):
+             project_schema.sections = raw_sections
+        else:
+             project_schema.sections = raw_sections
+
         response_projects.append(project_schema)
         
     return response_projects
@@ -67,8 +73,13 @@ async def read_project_details(
     generated_sections = sections_result.scalars().all()
 
     project_schema = schemas.Project.from_orm(project)
+
     if generated_sections:
-        project_schema.sections = generated_sections
+        project_schema.sections = [
+            ProjectSection.model_validate(sec) for sec in generated_sections
+        ]
+    else:
+        project_schema.sections = project.get_sections()
     
     return project_schema
 
@@ -179,4 +190,4 @@ async def suggest_document_outline(
         raise HTTPException(status_code=404, detail="Project not found")
 
     outline = await llm_service.generate_outline(request.main_topic, project.document_type)
-    return outline    
+    return outline
