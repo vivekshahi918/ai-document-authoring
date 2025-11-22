@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react'; 
 import api from '../services/api';
 
@@ -6,11 +5,16 @@ const SectionEditor = ({ section, onContentUpdate }) => {
     const [refinePrompt, setRefinePrompt] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
-    const [comment, setComment] = useState(section.comment || '');
+    const [comment, setComment] = useState(section.user_notes || section.comment || '');
     const [feedback, setFeedback] = useState(section.feedback || null);
 
     const [history, setHistory] = useState([]);
     const [showHistory, setShowHistory] = useState(false);
+
+    useEffect(() => {
+        setComment(section.user_notes || section.comment || '');
+        setFeedback(section.feedback || null);
+    }, [section]); 
 
     useEffect(() => {
         const fetchHistory = async () => {
@@ -22,7 +26,9 @@ const SectionEditor = ({ section, onContentUpdate }) => {
             }
         };
 
-        fetchHistory();
+        if (section.id) {
+            fetchHistory();
+        }
     }, [section.id]); 
 
     const handleRefine = async () => {
@@ -70,16 +76,18 @@ const SectionEditor = ({ section, onContentUpdate }) => {
     };
 
     const saveComment = async () => {
-        try {
-            await api.patch(`/sections/${section.id}`, { comment: comment });
-        } catch (err) {
-            console.error("Failed to save comment");
+        if (comment !== (section.user_notes || section.comment)) {
+            try {
+                await api.patch(`/sections/${section.id}`, { user_notes: comment });
+                console.log("Notes saved!");
+            } catch (err) {
+                console.error("Failed to save comment");
+            }
         }
     };
 
     return (
         <div style={{ marginBottom: '20px', background: '#282c34', padding: '20px', borderRadius: '8px', border: '1px solid #444' }}>
-            {/* --- All of your existing JSX is preserved here --- */}
             <h3>{section.title}</h3>
 
             <div style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6', background: '#1e1e1e', padding: '15px', borderRadius: '5px', minHeight: '100px' }}>
@@ -125,7 +133,7 @@ const SectionEditor = ({ section, onContentUpdate }) => {
                 </div>
             </div>
 
-            {/* --- NEW HISTORY DISPLAY SECTION --- */}
+            {/* History Display Section */}
             <div style={{ marginTop: '20px', borderTop: '1px solid #444', paddingTop: '15px' }}>
                 <button onClick={() => setShowHistory(!showHistory)} style={{padding: '5px 10px'}}>
                     {showHistory ? 'Hide' : 'Show'} Refinement History ({history.length})
