@@ -63,8 +63,12 @@ async def update_section_details(
     if not db_section:
         raise HTTPException(status_code=404, detail="Section not found")
 
+    if section_update.user_notes is not None:
+        db_section.comment = section_update.user_notes
+    
     if section_update.comment is not None:
         db_section.comment = section_update.comment
+
     if section_update.feedback is not None:
         db_section.feedback = section_update.feedback
         

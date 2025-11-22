@@ -29,6 +29,7 @@ class RefineRequest(BaseModel):
     
 class SectionUpdate(BaseModel):
     comment: Optional[str] = None
+    user_notes: Optional[str] = None
     feedback: Optional[str] = None
 
 class RefinementHistoryOut(BaseModel):

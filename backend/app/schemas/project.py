@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Optional, Union 
 
 class ProjectSection(BaseModel):
@@ -6,11 +6,12 @@ class ProjectSection(BaseModel):
     title: str
     content: Optional[str] = None  
     section_order: Optional[int] = None
-    user_notes: Optional[str] = None
+    user_notes: Optional[str] = Field(default=None, alias="comment")
     feedback: Optional[str] = None
 
     class Config:
         from_attributes = True
+        populate_by_name = True
 
 class ProjectCreate(BaseModel):
     title: str
